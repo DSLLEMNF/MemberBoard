@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+</head>
+<body>
+<h2>list.html</h2>
+세션값확인: <p th:text="${session['loginEmail']}"></p>
+세션값확인: <p th:text="${session.loginEmail}"></p>
+
+<table>
+    <tr>
+        <th>id</th>
+        <th>memberEmail</th>
+        <th>memberPassword</th>
+        <th>memberName</th>
+        <th>memberAge</th>
+        <th>memberMobile</th>
+        <th>상세조회</th>
+        <th>상세조회(ajax)</th>
+        <th>삭제</th>
+        <th>삭제(ajax)</th>
+    </tr>
+    <tr th:each="member: ${memberList}">
+        <td th:text="${member.id}"></td>
+        <td th:text="${member.memberEmail}"></td>
+        <td th:text="${member.memberPassword}"></td>
+        <td th:text="${member.memberName}"></td>
+        <td th:text="${member.memberAge}"></td>
+        <td th:text="${member.memberMobile}"></td>
+        <td>
+            <a th:href="@{|/member/${member.id}|}">조회</a>
+        </td>
+        <td><button th:onclick="detail([[${member.id}]])">조회(ajax)</button></td>
+        <td>
+            <a th:href="@{|/member/delete/${member.id}|}">삭제</a>
+        </td>
+        <td><button th:onclick="deleteById([[${member.id}]])">삭제(ajax)</button></td>
+
+    </tr>
+</table>
+<div id="member-detail">
+
+</div>
+</body>
+<script th:inline="javascript">
+    const deleteById = (id) => {
+        $.ajax({
+            type: "delete",
+            url: "/member/"+id,
+            // dataType: "text",
+            success: function () { // status code = 200
+                location.href = "/member/";
+            }, error: function () {
+                alert("ajax 실패");
+            }
+        });
+    }
+    const detail = (id) => {
+        $.ajax({
+            type: "post",
+            url: "/member/ajax/"+id,
+            dataType: "json",
+            success: function (result) {
+                console.log(result);
+                let detailView = "    <table>\n" +
+                    "        <tr>\n" +
+                    "            <th>id</th>\n" +
+                    "            <th>email</th>\n" +
+                    "            <th>password</th>\n" +
+                    "            <th>name</th>\n" +
+                    "            <th>age</th>\n" +
+                    "            <th>mobile</th>\n" +
+                    "        </tr>\n" +
+                    "        <tr>\n" +
+                    "            <td>"+result.id+"</td>\n" +
+                    "            <td>"+result.memberEmail+"</td>\n" +
+                    "            <td>"+result.memberPassword+"</td>\n" +
+                    "            <td>"+result.memberName+"</td>\n" +
+                    "            <td>"+result.memberAge+"</td>\n" +
+                    "            <td>"+result.memberMobile+"</td>\n" +
+                    "        </tr>\n" +
+                    "    </table>"
+                document.getElementById("member-detail").innerHTML = detailView;
+            },
+            error: function() {
+                alert("ajax 실패");
+            }
+        });
+    }
+</script>
+</html>

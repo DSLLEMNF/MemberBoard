@@ -1,0 +1,15 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.its.project.repository.BoardMapperRepository">
+    <select id="boardList" resultType="com.its.project.dto.BoardMapperDTO">
+        select * from board_table
+    </select>
+    <insert id="save" parameterType="com.its.project.dto.BoardMapperDTO">
+        insert into board_table(board_title, board_writer, board_contents)
+        values (#{board_title}, #{board_writer}, #{board_contents})
+    </insert>
+    <insert id="reply" parameterType="com.its.project.dto.CommentDTO">
+        insert into comment_table(comment_writer,comment_contents)
+        values (#{member_email},({#comment_contents}))
+    </insert>
+</mapper>

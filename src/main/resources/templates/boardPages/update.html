@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="/board/update" method="post">
+    <input type="hidden" th:value="${boardUpdate.boardPassword}" name="boardPassword">
+    관리번호:<input type="hidden" th:value="${boardUpdate.id}" name="id" readonly>
+    제목: <input type="text" th:value="${boardUpdate.boardTitle}" name="boardTitle"><br>
+    작성자: <input type="text" th:value="${boardUpdate.boardWriter}" name="boardWriter"><br>
+    내용: <input type="text" th:value="${boardUpdate.boardContents}" name="boardContents"><br>
+    조회수:<input type="text" th:value="${boardUpdate.boardHits}" name="boardHits" readonly><br>
+    <input type="submit" value="수정">
+</form>
+</body>
+</html>

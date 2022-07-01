@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+</head>
+<body>
+<h2>save.html</h2>
+<form action="/member/save" method="post">
+    이메일: <input type="text" name="memberEmail" id="memberEmail" onblur="emailDuplicate()"> <br>
+    <span id="email-dup-result"></span>
+    비밀번호: <input type="text" name="memberPassword"> <br>
+    이름: <input type="text" name="memberName"> <br>
+    나이: <input type="text" name="memberAge"> <br>
+    전화번호: <input type="text" name="memberMobile"> <br>
+    <input type="submit" value="회원가입">
+</form>
+</body>
+<script th:inline="javascript">
+    const emailDuplicate = () => {
+        const email = document.getElementById("memberEmail").value;
+        const checkResult = document.getElementById("email-dup-result");
+        $.ajax({
+            type: "post",
+            url: "/member/emailCheck",
+            dataType: "text",
+            data: {
+                "memberEmail": email
+            },
+            success: function (result) {
+                if (result == "ok") {
+                    checkResult.innerHTML = "사용가능합니다.";
+                    checkResult.style.color = "green";
+                } else {
+                    checkResult.innerHTML = "이미 사용중인 이메일 입니다.";
+                    checkResult.style.color = "red";
+                }
+            },
+            error: function () {
+                alert("ajax 실패");
+            }
+        });
+    }
+</script>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<th:block th:replace="commonPages/header :: header"></th:block>
+<h2>detail.html</h2>
+<table>
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>작성자</th>
+        <th>제목</th>
+        <th>비밀번호</th>
+        <th>작성일자</th>
+        <th>내용</th>
+        <th>조회수</th>
+        <th>첨부파일</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td th:text="${board.id}"></td>
+        <td th:text="${board.boardWriter}"></td>
+        <td th:text="${board.boardTitle}"></td>
+        <td th:text="${board.boardPassword}"></td>
+        <td th:text="${board.createdTime}"></td>
+        <td th:text="${board.boardContents}"></td>
+        <td th:text="${board.boardHits}"></td>
+        <td><img th:src="@{|/upload/${board.boardFileName}|}" width="100" height="100" alt=""></td>
+    </tr>
+    </tbody>
+</table>
+<button onclick="req(1)">수정</button>
+<button onclick="req(2)">삭제</button>
+
+<div id="pw">
+</div>
+<table>
+    <form action="/comment/save" method="post" name="commentSave">
+<tr>
+
+    <input type="hidden" th:value="${boardDTO.id}" name="boardId">
+    <th>작성자:</th>
+    <th th:text="${session.loginEmail}"></th>
+    <td><input type="hidden" name="commentWriter" th:value="${session.loginEmail}"></td>
+    <td><input type="text-box" name="commentContents"></td>
+    <td th:text="*{#temporals.format(comment.createdTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+    <td><input type="submit" name="replyComment" value="댓글등록"></td>
+
+</tr>
+    </form>
+<tr th:each="comment : ${commentDTOList}">
+    <td th:text="${comment.commentWriter}"></td>
+    <td th:text="${comment.commentContents}"></td>
+    <td th:text="*{#temporals.format(comment.createdTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+</tr>
+</table>
+</body>
+<script th:inline="javascript">
+    const req = (num) => {
+        let inputTag = "비밀번호 입력: <input type=\"text\" id=\"password\">\n" + "<button onclick=\"pwCheck(" + num + ")\">확인</button>";
+        document.getElementById("pw").innerHTML = inputTag;
+    }
+    const pwCheck = (num) => {
+        const pwConfirm = document.getElementById("password").value;
+        const pw = [[${board.boardPassword}]];
+        const id = [[${board.id}]];
+        if (pw == pwConfirm) {
+            if (num == 1) {
+                location.href = "/board/update/" + id;
+            } else {
+                location.href = "/board/delete/" + id;
+            }
+        } else {
+            alert("틀려요");
+        }
+    }
+</script>
+</html>
